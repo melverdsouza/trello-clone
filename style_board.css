@@ -1,0 +1,62 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgb(66, 135, 245);
+    color: white;
+}
+
+a{
+    font-size: 36px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    background-color: rgb(31, 81, 161);
+    text-decoration: none;
+}
+
+button {
+    border: none;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(31, 81, 161);
+}
+
+.board-name {
+    font-size: 28px;
+    font-weight: bold;
+    padding-top: 5%;
+    padding-left: 3%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.list-each-section {
+    height: 100px;
+    background-color: lightgray;
+    border-radius: 5px;
+    width: 20%;
+    margin-top: 5%;
+    margin-left: 3%;
+}
+
+.list-heading {
+    color: rgb(73, 73, 73);
+    font-size: 20px;
+}
+
+.list-full {
+    display: flex;
+}
+
+.new-list-input {
+    padding-top: 3%;
+    padding-left: 3%;
+}
+
+.add-list {
+    width: 14%;
+}
