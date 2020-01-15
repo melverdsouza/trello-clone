@@ -1,5 +1,3 @@
-const key = '501f7e1348222aa1391af5f0ca54da0b'
-const token = 'e94e0961cd9a05d783691c9bee72797b43403469804b0bc25649493b8beae640'
 const id = '5e1d65ead5ab7432fe711032';
 
 window.onload = function () {
