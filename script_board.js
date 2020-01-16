@@ -1,3 +1,5 @@
+const key = '501f7e1348222aa1391af5f0ca54da0b'
+const token = 'e94e0961cd9a05d783691c9bee72797b43403469804b0bc25649493b8beae640'
 const id = '5e1d65ead5ab7432fe711032';
 
 window.onload = function () {
@@ -50,7 +52,7 @@ function  makeList(listData) {
         // listHeading[0].createTextNode(`${listData[0]['name']}`)
         listSection.appendChild(listHeading);
         listHeading.innerText = `${listData[i]['name']}`
-        getCard(listData[i]['id'])
+        getCard(listData[i]['id'],i)
     }
     
     
@@ -75,16 +77,58 @@ async function postList() {
     }
 }
 
-function getCard(listId) {
+function getCard(listId,listNumber) {
     fetch(`https://api.trello.com/1/lists/${listId}/cards?fields=id,name,badges,labels&key=${key}&token=${token}`)
     .then((cardData) => {
         return cardData.json()
     }).then((cardData) => {
-        showCard(cardData);
         console.log(cardData)
+        showCard(cardData,listNumber);
     })
 }
 
-function showCard (cardData) {
-    
+function showCard (cardData,listNumber) {
+    for(let i = 0; i < cardData.length;i++) {
+        let fullSec = document.getElementsByClassName('list-each-section')[listNumber];
+        let fullCard = document.createElement('div')
+        fullCard.setAttribute('class', 'full-card')
+        let newDiv = document.createElement('button')
+        newDiv.setAttribute('class', 'card-name')
+        fullSec.appendChild(fullCard);
+        fullCard.appendChild(newDiv);
+        let boardHeading = document.createTextNode(`${cardData[i]['name']}`)
+        newDiv.appendChild(boardHeading)
+        let deleteCard = document.createElement('button')
+        deleteCard.setAttribute('class', 'delete-card')
+        deleteCard.setAttribute('onclick','deleteSelectCard()')
+        let deleteText = document.createTextNode('del')
+        deleteCard.appendChild(deleteText)
+        fullCard.appendChild(deleteCard)
+    }
+    let fullSec = document.getElementsByClassName('list-each-section')[listNumber];
+    let cardInput = document.createElement('input');
+    cardInput.setAttribute('class','card-input');
+    cardInput.setAttribute('placeholder', 'Add new card')
+    cardInput.setAttribute('onkeydown', 'makeNewCard()')
+    fullSec.appendChild(cardInput)
 }
+
+// function makeNewCard() {
+//     if(event.key === "Enter") {
+
+//     }
+// }
+
+
+function deleteSelectCard() {
+    fetch(`https://api.trello.com/1/cards/${DeleteCardId}?key=${key}&token=${token}`, { method: 'delete' }).then((deleted) => {
+        return deleted
+    }).then((deleted) => {
+        console.log(deleted)
+        showBoard();
+        getList();
+    })
+}
+
+// what is ssh
+// how to add ssh key to github
