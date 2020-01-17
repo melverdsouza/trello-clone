@@ -3,6 +3,8 @@ const token = 'e94e0961cd9a05d783691c9bee72797b43403469804b0bc25649493b8beae640'
 const id = '5e1d65ead5ab7432fe711032';
 
 window.onload = function () {
+    this.console.log(key)
+    this.console.log(token);
     showBoard();
     this.getList()
 }
@@ -59,10 +61,6 @@ function  makeList(listData) {
     
 }
 
-// check how to make a post
-// function makeCard() {
-//     https://api.trello.com/1/cards?key=501f7e1348222aa1391af5f0ca54da0b&token=e94e0961cd9a05d783691c9bee72797b43403469804b0bc25649493b8beae640&name=hope it works&pos=top&idList=5e1db1038b4058084050f7b3&keepFromSource=all    
-// }
 
 async function postList() {
     if(event.key === 'Enter') {
@@ -83,24 +81,27 @@ function getCard(listId,listNumber) {
         return cardData.json()
     }).then((cardData) => {
         console.log(cardData)
-        showCard(cardData,listNumber);
+        showCard(cardData,listNumber,listId);
     })
 }
 
-function showCard (cardData,listNumber) {
+function showCard (cardData,listNumber,listId) {
     for(let i = 0; i < cardData.length;i++) {
         let fullSec = document.getElementsByClassName('list-each-section')[listNumber];
         let fullCard = document.createElement('div')
         fullCard.setAttribute('class', 'full-card')
         let newDiv = document.createElement('button')
         newDiv.setAttribute('class', 'card-name')
+        newDiv.setAttribute('id', `${cardData[i]['id']}`)
+        newDiv.setAttribute('onclick','openPopup(this)')
         fullSec.appendChild(fullCard);
         fullCard.appendChild(newDiv);
         let boardHeading = document.createTextNode(`${cardData[i]['name']}`)
         newDiv.appendChild(boardHeading)
         let deleteCard = document.createElement('button')
         deleteCard.setAttribute('class', 'delete-card')
-        deleteCard.setAttribute('onclick','deleteSelectCard()')
+        deleteCard.setAttribute('onclick','deleteSelectCard(this)')
+        deleteCard.setAttribute('id', `${cardData[i]['id']}`)
         let deleteText = document.createTextNode('del')
         deleteCard.appendChild(deleteText)
         fullCard.appendChild(deleteCard)
@@ -109,26 +110,40 @@ function showCard (cardData,listNumber) {
     let cardInput = document.createElement('input');
     cardInput.setAttribute('class','card-input');
     cardInput.setAttribute('placeholder', 'Add new card')
-    cardInput.setAttribute('onkeydown', 'makeNewCard()')
+    cardInput.setAttribute('onkeydown', 'makeNewCard(this)')
+    cardInput.setAttribute('id', listId)
     fullSec.appendChild(cardInput)
 }
 
-// function makeNewCard() {
-//     if(event.key === "Enter") {
+function makeNewCard(newCardName) {
+    if(event.key === 'Enter') {
+        event.preventDefault()
+        let CardName = newCardName.value;
+        let thisListId = newCardName.id
+        fetch(`https://api.trello.com/1/cards?name=${CardName}&idList=${thisListId}&keepFromSource=all&key=${key}&token=${token}`, { method: 'post' })
+        .then((newListData) => {
+            return newListData
+        }).then((newListData) => {
+            console.log(newListData);
+        })
+    }
+}
 
-//     }
-// }
 
-
-function deleteSelectCard() {
-    fetch(`https://api.trello.com/1/cards/${DeleteCardId}?key=${key}&token=${token}`, { method: 'delete' }).then((deleted) => {
+function deleteSelectCard(clicked) {
+    let toDelete = clicked.id;
+    console.log(toDelete);
+    fetch(`https://api.trello.com/1/cards/${toDelete}?key=${key}&token=${token}`, { method: 'delete' })
+    .then((deleted) => {
         return deleted
     }).then((deleted) => {
-        console.log(deleted)
-        showBoard();
-        getList();
+        console.log(deleted);
     })
 }
 
-// what is ssh
-// how to add ssh key to github
+function openPopup(selectCard) {
+    document.getElementById('boards').style.display = 'block';
+    let overlay = document.getElementById('boards');
+    let checklistFull = document.createElement('div');
+    checklistFull.setAttribute('class', 'checklist-full')
+}
