@@ -141,9 +141,65 @@ function deleteSelectCard(clicked) {
     })
 }
 
-function openPopup(selectCard) {
-    document.getElementById('boards').style.display = 'block';
-    let overlay = document.getElementById('boards');
-    let checklistFull = document.createElement('div');
-    checklistFull.setAttribute('class', 'checklist-full')
+function openPopup(selected) {
+    let selectCard = selected.id;
+    document.getElementsByClassName('overlay')[0].style.display = 'block';
+    document.getElementsByClassName('checklist-full')[0].style.display = 'block';
+    let checklistFull = document.getElementsByClassName('checklist-full')[0]
+    let cardHeading = document.createElement('div');
+    cardHeading.setAttribute('class', 'card-heading');
+    let cardText = document.getElementById(selectCard).innerText;
+    cardHeading.innerText = `${cardText}`
+    checklistFull.appendChild(cardHeading);
+    let checklistInput = document.createElement('input');
+    checklistInput.setAttribute('class','checklist-input');
+    checklistInput.setAttribute('placeholder', 'Add new checklist')
+    checklistInput.setAttribute('onkeydown', 'makeNewCheckList(this)')
+    checklistFull.appendChild(checklistInput)
+    getChecklistData(selectCard);
+}
+
+function getChecklistData(cardId) {
+    fetch(`https://api.trello.com/1/cards/${cardId}/checklists?checkItems=all&checkItem_fields=name%2CnameData%2Cpos%2Cstate&filter=all&fields=all&key=${key}&token=${token}`)
+    .then((checklistData) => {
+        return checklistData.json()
+    }).then((checklistData) => {
+        console.log(checklistData)
+        displayChecklist(checklistData);
+    })
+}
+
+function displayChecklist(checklistData) {
+    
+    let checklistFull = document.getElementsByClassName('checklist-full')[0]
+    let checklistItems = document.createElement('div') 
+    checklistItems.setAttribute('class', 'checklist-items')   
+    checklistFull.appendChild(checklistItems)
+    // for loop
+    for(let i = 0; i < checklistData[0]['checkItems'].length; i++) {
+        let eachChecklistItem = document.createElement('div');
+        eachChecklistItem.setAttribute('class','checklist-item-full');
+        checklistItems.appendChild(eachChecklistItem);
+        let checklistBox = document.createElement('input');
+        checklistBox.setAttribute('type', 'checkbox');
+        checklistBox.setAttribute('class', 'list-checkbox');
+        eachChecklistItem.appendChild(checklistBox);
+        let checklistText = document.createElement('div');
+        checklistText.setAttribute('class', 'checklist-text');
+        checklistText.innerText = `${checklistData[0]['checkItems'][i]['name']}`
+        eachChecklistItem.appendChild(checklistText);
+        let deleteChecklist = document.createElement('button');
+        deleteChecklist.setAttribute('class', 'delete-checklist')
+        deleteChecklist.setAttribute('onclick', 'deleteChecklistItem(this)');
+        let delChecklistText = document.createTextNode('del')
+        deleteChecklist.appendChild(delChecklistText)
+        eachChecklistItem.appendChild(deleteChecklist);
+    }
+
+}
+
+function closePopUp() {
+    document.getElementsByClassName('overlay')[0].style.display = 'none';
+    document.getElementsByClassName('checklist-full')[0].style.display = 'none';
+
 }
