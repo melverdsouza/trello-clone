@@ -149,66 +149,65 @@ function openPopup(selected) {
     document.getElementsByClassName('overlay')[0].style.display = 'block';
     document.getElementsByClassName('checklist-full')[0].style.display = 'block';
     let checklistFull = document.getElementsByClassName('checklist-full')[0]
+    let headingFull = document.createElement('div');
+    headingFull.setAttribute('class', 'heading-full')
     let cardHeading = document.createElement('div');
     cardHeading.setAttribute('class', 'card-heading');
     let cardText = document.getElementById(selectCard).innerText;
     cardHeading.innerText = `${cardText}`
-    checklistFull.appendChild(cardHeading);
+    let closeChecklist = document.createElement('button');
+    closeChecklist.setAttribute('class', 'close-checklist')
+    closeChecklist.setAttribute('onclick', 'closePopUp()')
+    closeChecklist.innerText = `X`
+    checklistFull.appendChild(headingFull);
+    headingFull.appendChild(cardHeading);
+    headingFull.appendChild(closeChecklist)
     let checklistInput = document.createElement('input');
     checklistInput.setAttribute('class','checklist-input');
     checklistInput.setAttribute('id', selectCard)
-    checklistInput.setAttribute('placeholder', 'Add new checklist item')
+    checklistInput.setAttribute('placeholder', 'Add new checklist')
     checklistInput.setAttribute('onkeydown', 'getCheckListId(this)')
     checklistFull.appendChild(checklistInput)
-    getChecklistData(selectCard,selectCard);
+    getChecklistData(selectCard);
 }
 
-function getChecklistData(cardId,selectCard) {
-    fetch(`https://api.trello.com/1/cards/${cardId}/checklists?checkItems=all&checkItem_fields=name%2CnameData%2Cpos%2Cstate&filter=all&fields=all&key=${key}&token=${token}`)
+function getChecklistData(selectCard) {
+    fetch(`https://api.trello.com/1/cards/${selectCard}/checklists?checkItems=all&checkItem_fields=name%2CnameData%2Cpos%2Cstate&filter=all&fields=all&key=${key}&token=${token}`)
     .then((checklistData) => {
         return checklistData.json()
     }).then((checklistData) => {
-        console.log(cardId)
         console.log(checklistData)
         displayChecklist(checklistData,selectCard);
     })
 }
 
 function displayChecklist(checklistData,selectCard) {
-    console.log(checklistData)
-    let checklistFull = document.getElementsByClassName('checklist-full')[0]
-    let checklistItems = document.createElement('div') 
-    checklistItems.setAttribute('class', 'checklist-items')
-    checklistItems.setAttribute('id',selectCard)  
-    checklistFull.appendChild(checklistItems)
-    // for loop
-    for(let i = 0; i < checklistData[0]['checkItems'].length; i++) {
-        let eachChecklistItem = document.createElement('div');
-        eachChecklistItem.setAttribute('class','checklist-item-full');
-        checklistItems.appendChild(eachChecklistItem);
-        let checklistBox = document.createElement('input');
-        checklistBox.setAttribute('type', 'checkbox');
-        checklistBox.setAttribute('class', 'list-checkbox');
-        checklistBox.setAttribute('onclick','checklistChecked(this)')
-        checklistBox.setAttribute('id', `${checklistData[0]['checkItems'][i]['id']}`)
-        eachChecklistItem.appendChild(checklistBox);
-        let checklistText = document.createElement('div');
-        checklistText.setAttribute('class', 'checklist-text');
-        checklistText.innerText = `${checklistData[0]['checkItems'][i]['name']}`
-        eachChecklistItem.appendChild(checklistText);
-        let deleteChecklist = document.createElement('button');
-        deleteChecklist.setAttribute('class', 'delete-checklist')
-        deleteChecklist.setAttribute('onclick', 'deleteChecklistItem(this)');
-        eachChecklistItem.setAttribute('id', `${checklistData[0]['checkItems'][i]['idChecklist']}`)
-        deleteChecklist.setAttribute('id', `${checklistData[0]['checkItems'][i]['id']}`)
-        let delChecklistText = document.createTextNode('del')
-        deleteChecklist.appendChild(delChecklistText)
-        eachChecklistItem.appendChild(deleteChecklist);
-        if(checklistData[0]['checkItems'][i]['state'] === 'complete') {
-            document.getElementsByClassName('checklist-text')[i].style.textDecoration = 'line-through'
-            document.getElementsByClassName('list-checkbox')[i].checked = true;
-        }
-    }
+    let checklistFull = document.getElementsByClassName('checklist-full')[0];
+    let checklistHeadFull = document.createElement('div');
+    checklistHeadFull.setAttribute('class', 'checklist-head-full');
+    checklistFull.appendChild(checklistHeadFull)
+    let checklistHead = document.createElement('div');
+    checklistHead.setAttribute('class', 'checklist-head');
+    let checklistHeadText = document.createTextNode(`${checklistData[0]['name']}`);
+    checklistHead.appendChild(checklistHeadText);
+    checklistHeadFull.appendChild(checklistHead);
+    let checklistHeadDelete = document.createElement('button');
+    let del = document.createTextNode('del');
+    checklistHeadDelete.appendChild(del)
+    checklistHeadDelete.setAttribute('class', 'del')
+    checklistHeadDelete.setAttribute('id', `${checklistData[0]['id']}`)
+    checklistHeadDelete.setAttribute('onclick', 'deleteChecklist(this)')
+    checklistHeadFull.appendChild(checklistHeadDelete)
+    let checklistItemInput = document.createElement('input')
+    checklistItemInput.setAttribute('type', 'text');
+    checklistItemInput.setAttribute('placeholder', 'Add checklist item')
+    checklistItemInput.setAttribute('onkeydown', 'addChecklistItem(this)')
+    checklistItemInput.setAttribute('id', `${checklistData[0]['id']}`)
+    checklistItemInput.setAttribute('class', 'checklist-item-input')
+    checklistFull.appendChild(checklistItemInput);
+    // let checklistItemFull = document.createElement('div');
+    // checklistFull.appendChild(checklistItemFull);
+    
 }
 
 function getCheckListId(inputValue) {
@@ -217,72 +216,35 @@ function getCheckListId(inputValue) {
         let thisCardId = inputValue.id
         console.log(newChecklist)
         console.log(thisCardId)
-        // getChecklist(thisCardId)
-        checklistReload()
+        getChecklist(thisCardId,newChecklist)
+        // checklistReload(cardNum)
     }
 }
 
-// function getChecklist(thisCardId) {
-//     fetch(`https://api.trello.com/1/cards/${thisCardId}/checklists?checkItems=all&checkItem_fields=name%2CnameData%2Cpos%2Cstate&filter=all&fields=all&key=${key}&token=${token}`)
-//         .then((newListData) => {
-//             return newListData
-//         }).then((newListData) => {
-//             console.log(newListData);
-//             // postChecklist(newListData[0]['id'])
-//         })
-// }
-
-// function postChecklist(checklistId) {
-
-// }
-
-function deleteChecklistItem(delList) {
-    let toDelListItem = delList.id
-    let toDelList = document.getElementById(toDelListItem).parentElement.id;
-    fetch(`https://api.trello.com/1/checklists/${toDelList}/checkItems/${toDelListItem}?key=${key}&token=${token}`, { method: 'delete' })
+function getChecklist(thisCardId, newChecklist) {
+    fetch(`https://api.trello.com/1/checklists?idCard=${thisCardId}&name=${newChecklist}&pos=top&key=${key}&token=${token}`, { method: 'post' })
         .then((newListData) => {
             return newListData
         }).then((newListData) => {
             console.log(newListData);
-            checklistReload();
+            // postChecklist(newListData[0]['id'])
         })
 }
 
-// go through the checkbox checked function again
 
-// function checklistChecked(checkedIt) {
-//     let cardNumber = document.getElementsByClassName('checklist-items')[0].id
-//     let listItemNumber = checkedIt.id
-//     let listNumber = checkedIt.parentNode.id
-//     if(checkedIt.checked) {
-//         checkIt(cardNumber,listItemNumber,listNumber)
-//         console.log(listNumber)
-//         console.log(cardNumber)
-//         console.log(listItemNumber)
-//     }
-//     else if(!checkedIt.checked) {
-//         uncheckIt(cardNumber,listItemNumber,listNumber)
-//     }
-// }
 
-// function checkIt(cardNumber,listItemNumber,listNumber) {
-//     fetch(`https://api.trello.com/1/cards/${cardNumber}/checkItem/${listItemNumber}?state=complete&idChecklist=${listNumber}&key=${key}
-//         &token=${token}`, { method: 'put' }).then((complete) => {
-//             return complete
-//         }).then((complete) => {
-//             console.log(complete)
+
+// function deleteChecklistItem(delList) {
+//     let toDelListItem = delList.id
+//     let toDelList = document.getElementById(toDelListItem).parentElement.id;
+//     fetch(`https://api.trello.com/1/checklists/${toDelList}/checkItems/${toDelListItem}?key=${key}&token=${token}`, { method: 'delete' })
+//         .then((newListData) => {
+//             return newListData
+//         }).then((newListData) => {
+//             console.log(newListData);
+//             checklistReload();
 //         })
 // }
-
-// function uncheckIt(cardNumber,listItemNumber,listNumber) {
-//     fetch(`https://api.trello.com/1/cards/${cardNumber}/checkItem/${listItemNumber}?state=incomplete&idChecklist=${listNumber}&key=${key}
-//         &token=${token}`, { method: 'put' }).then((incomplete) => {
-//             return incomplete
-//         }).then((incomplete) => {
-//             console.log(incomplete);
-//         })
-// }
-
 
 function closePopUp() {
     document.getElementsByClassName('overlay')[0].style.display = 'none';
@@ -295,14 +257,23 @@ function reload() {
     while(checkChild.firstChild) {
         checkChild.removeChild(checkChild.firstChild)
     }
+    document.getElementsByClassName('board-name')[0].remove();
     showBoard();
     this.getList()
 }
 
-function checklistReload() {
+function checklistReload(thisCardId) {
     let checklistChild = document.getElementsByClassName('checklist-full')[0]
     while(checklistChild.firstChild) {
         checklistChild.removeChild(checklistChild.firstChild)
+    }
+    let unique = document.getElementsByClassName('card-name')
+    closePopUp()
+    
+    for(let i = 0; i < unique.length;i++) {
+        if(unique[i].id === thisCardId) {
+            unique[i].click()
+        }
     }
 }
 

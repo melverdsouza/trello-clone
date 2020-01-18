@@ -57,9 +57,11 @@ button {
     font-family: Arial, Helvetica, sans-serif;
     padding-left: 4%;
     color: darkslategray;
-    background-color: transparent;
-    width: 85%;
+    background-color: whitesmoke;
+    width: 80%;
     text-align: left;
+    border-radius: 3px;
+    margin: 2%;
 }
 
 .list-full {
@@ -122,21 +124,23 @@ button {
     margin: auto;
     z-index: 5;
     border-radius: 10px;
+    overflow-y: scroll;
 }
 
 .card-heading {
     color: rgb(73, 73, 73);
-    font-size: 20px;
-    padding-bottom: 5%;
+    font-size: 24px;
+    padding-bottom: 2%;
     padding-left: 3%;
-    margin-top: 3%;
-    font-weight: bold;    
+    margin-top: 5%;
+    font-weight: bold;
+    width: 80%;    
 }
 
 .checklist-input {
     margin-left: 3%;
     margin-top: 2%;
-    margin-bottom: 10%;
+    margin-bottom: 4%;
 }
 
 .list-checkbox {
@@ -157,3 +161,36 @@ button {
     color: darkslategray;
 }
 
+.heading-full {
+    display: flex;
+    justify-content: space-between;
+}
+
+.close-checklist {
+    font-weight: bold;
+    color: rgb(73, 73, 73);
+    font-family: Arial, Helvetica, sans-serif;
+    margin-right: 9%;
+    font-size: 20px;
+}
+
+.checklist-head {
+    padding: 3%;
+    font-weight: bold;
+    color: rgb(73, 73, 73);
+    font-size: 18px;
+    width: 80%;
+}
+
+.checklist-head-full {
+    display: flex;
+    justify-content: space-between;
+}
+
+.del {
+    margin: 0% 5%;
+}
+
+.checklist-item-input {
+    margin: 0% 3%;
+}
