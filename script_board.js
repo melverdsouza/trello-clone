@@ -3,8 +3,8 @@ const token = 'e94e0961cd9a05d783691c9bee72797b43403469804b0bc25649493b8beae640'
 const id = '5e1d65ead5ab7432fe711032';
 
 window.onload = function () {
-    this.console.log(key)
-    this.console.log(token);
+    console.log(key)
+    console.log(token);
     showBoard();
     this.getList()
 }
@@ -32,7 +32,6 @@ function boardName(boardData) {
 }
 
 // to make a list-heading
-
 function getList() {
     fetch(`https://api.trello.com/1/boards/${id}/lists/all?key=${key}&token=${token}`)
     .then((listData) => {
@@ -55,12 +54,8 @@ function  makeList(listData) {
         listSection.appendChild(listHeading);
         listHeading.innerText = `${listData[i]['name']}`
         getCard(listData[i]['id'],i)
-    }
-    
-    
-    
+    }   
 }
-
 
 async function postList() {
     if(event.key === 'Enter') {
@@ -130,7 +125,6 @@ function makeNewCard(newCardName) {
         })
     }
 }
-
 
 function deleteSelectCard(clicked) {
     let toDelete = clicked.id;
@@ -299,7 +293,6 @@ function deleteChecklist(deleteData) {
         checklistReload()
     })
 }
-
 
 function checkItem(check) {
     getChecklistData()
