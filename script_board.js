@@ -172,6 +172,8 @@ function openPopup(selected) {
     checklistFull.appendChild(checklistInput)
     getChecklistData(selectCard);
     let toReload = document.getElementsByClassName('reload')[0]
+    toReload.innerText = `${selected.textContent}`
+    toReload.setAttribute('id', selectCard)
     toReload.setAttribute('id', selectCard)
 }
 

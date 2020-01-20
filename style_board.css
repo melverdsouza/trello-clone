@@ -151,6 +151,7 @@ button {
 .checklist-item-full {
     display: flex;
     margin-bottom: 5%;
+    padding: 1% 0%;
 }
 
 .checklist-text {
@@ -208,14 +209,14 @@ button {
 }
 .checklist-box {
     margin-left: 3%;
-    margin-top: 3%;
+    margin-top: 1%;
 }
 
 .checklist-item-text {
     color: rgb(73, 73, 73);
-    margin-top: 2%;
+    margin-top: 0%;
     margin-left: 2%;
-    width: 78%;
+    width: 80%;
     margin-right: 2%;
 }
 
