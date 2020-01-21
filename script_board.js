@@ -99,8 +99,23 @@ function showCard (cardData,listNumber,listId) {
         deleteCard.setAttribute('onclick','deleteSelectCard(this)')
         deleteCard.setAttribute('id', `${cardData[i]['id']}`)
         let deleteText = document.createTextNode('del')
-        deleteCard.appendChild(deleteText)
-        fullCard.appendChild(deleteCard)
+        deleteCard.appendChild(deleteText);
+        fullCard.appendChild(deleteCard);
+        let edit = document.createElement('button');
+        edit.setAttribute('class', 'edit-card');
+        edit.setAttribute('onclick', 'editCard(this)')
+        edit.setAttribute('name', `${cardData[i]['id']}${i}`)
+        let editText = document.createTextNode('edit');
+        let editCardInput = document.createElement('input');
+        editCardInput.setAttribute('type', 'text');
+        editCardInput.setAttribute('class','edit-card-input')
+        editCardInput.setAttribute('placeholder', 'Edit card name to..')
+        editCardInput.setAttribute('name', `${cardData[i]['id']}`)
+        editCardInput.setAttribute('id', `${cardData[i]['id']}${i}`)
+        editCardInput.setAttribute('onkeydown', 'editCardInput(this)')
+        fullCard.appendChild(edit);
+        edit.appendChild(editText);
+        fullCard.appendChild(editCardInput);
     }
     let fullSec = document.getElementsByClassName('list-each-section')[listNumber];
     let cardInput = document.createElement('input');
@@ -327,6 +342,34 @@ function reload() {
     showBoard();
     this.getList()
 }
+
+// display input box to edit card
+function editCard(val) {
+    document.getElementById(val.name).style.display = 'block';
+    // let cardValue = document.getElementById(val.name).value
+    // console.log(val.name)
+    // if(event.key === 'Enter') {
+    //     console.log(cardValue)
+    // }
+    
+}
+
+function editCardInput(val) {
+    let cardValue = val.value
+    if(event.key === 'Enter') {
+        fetch(`https://api.trello.com/1/cards/${val.name}?name=${cardValue}&key=${key}&token=${token}`,  { method: 'put'})
+        .then((edittedCard) => {
+            return edittedCard
+        }).then((edittedCard) => {
+            console.log(edittedCard)
+            reload()
+        })
+    }
+}
+
+// function putEditCard(cardValue) {
+//     console.log(cardValue)
+// }
 
 // reload the checklist
 function checklistReload(thisCardId) {

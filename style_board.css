@@ -35,6 +35,13 @@ button {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.edit-card-input {
+    display: none;
+    margin-left: 45%;
+    margin-bottom: 5%;
+}
+
+
 .list-each-section {
     height: auto;
     background-color: lightgray;
@@ -58,10 +65,11 @@ button {
     padding-left: 4%;
     color: darkslategray;
     background-color: whitesmoke;
-    width: 80%;
+    width: 70%;
     text-align: left;
     border-radius: 3px;
     margin: 2%;
+    margin-right: 5%;
 }
 
 .list-full {
@@ -125,6 +133,10 @@ button {
     z-index: 5;
     border-radius: 10px;
     overflow-y: scroll;
+}
+
+.edit-card {
+    margin-left: 5%;
 }
 
 .card-heading {
