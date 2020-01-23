@@ -206,6 +206,9 @@ function displayChecklist(checklistData,selectCard) {
         checklistFull.appendChild(checklistHeadFull)
         let checklistHead = document.createElement('div');
         checklistHead.setAttribute('class', 'checklist-head');
+        checklistHead.setAttribute('id', `${checklistData[i]['id']}`)
+        checklistHead.setAttribute('contenteditable', 'true')
+        checklistHead.setAttribute('onkeydown', 'editChecklist(this)')
         let checklistHeadText = document.createTextNode(`${checklistData[i]['name']}`);
         checklistHead.appendChild(checklistHeadText);
         checklistHeadFull.appendChild(checklistHead);
@@ -249,6 +252,9 @@ function showChecklistItem(checklistData, selectCard,num) {
         checklistBox.setAttribute('id', `${checklistData[num]['checkItems'][i]['idChecklist']}`)
         let checklistItemText = document.createElement('div');
         checklistItemText.setAttribute('class', 'checklist-item-text')
+        checklistItemText.setAttribute('id', `${checklistData[num]['checkItems'][i]['id']}`);
+        checklistItemText.setAttribute('contenteditable', 'true');
+        checklistItemText.setAttribute('onkeydown', 'editChecklistItem(this)');
         let checklistText = document.createTextNode(`${checklistData[num]['checkItems'][i]['name']}`)
         checklistItemText.appendChild(checklistText);
         let checklistItemDel = document.createElement('button');
@@ -273,6 +279,25 @@ function getCheckListId(inputValue) {
         console.log(newChecklist)
         console.log(thisCardId)
         getChecklist(thisCardId,newChecklist)
+    }
+}
+
+// edit checklist name
+function editChecklist(val) {
+    let newChecklistName = val.textContent;
+    let checklistId = val.id;
+    if(event.key === 'Enter') {
+        console.log(newChecklistName);
+        console.log(checklistId)
+        fetch(`https://api.trello.com/1/checklists/${checklistId}?name=${newChecklistName}&key=${key}&token=${token}`, { method: 'put' }).then((edittedChecklist) => {
+            return edittedChecklist;
+        }).then((edittedChecklist) => {
+            console.log(edittedChecklist);
+            console.log('checklist name changed');
+            closePopUp();
+            let reloadchecklistPage = document.getElementsByClassName('reload')[0];
+            checklistReload();
+        })  
     }
 }
 
@@ -343,15 +368,30 @@ function reload() {
     this.getList()
 }
 
+// edit checklist item
+function editChecklistItem(val) {
+    let newChecklistItemName = val.textContent;
+    let checklistItemId = val.id;
+    let cardNumber = document.getElementsByClassName('reload')[0].id
+    if(event.key === 'Enter') {
+        console.log(newChecklistItemName);
+        console.log(checklistItemId)
+        fetch(`https://api.trello.com/1/cards/${cardNumber}/checkItem/${checklistItemId}?name=${newChecklistItemName}&key=${key}&token=${token}`, { method: 'put' }).then((edittedChecklist) => {
+            return edittedChecklist;
+        }).then((edittedChecklist) => {
+            console.log(edittedChecklist);
+            console.log('checklist name changed');
+            closePopUp();
+            let reloadchecklistPage = document.getElementsByClassName('reload')[0];
+            checklistReload();
+        })
+        
+    }
+}
+
 // display input box to edit card
 function editCard(val) {
-    document.getElementById(val.name).style.display = 'block';
-    // let cardValue = document.getElementById(val.name).value
-    // console.log(val.name)
-    // if(event.key === 'Enter') {
-    //     console.log(cardValue)
-    // }
-    
+    document.getElementById(val.name).style.display = 'block';    
 }
 
 function editCardInput(val) {
@@ -366,10 +406,6 @@ function editCardInput(val) {
         })
     }
 }
-
-// function putEditCard(cardValue) {
-//     console.log(cardValue)
-// }
 
 // reload the checklist
 function checklistReload(thisCardId) {
